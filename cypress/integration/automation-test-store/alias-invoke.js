@@ -15,14 +15,13 @@ describe("Alias and invoke", () => {
         cy.get('@productThumbnail').should('have.length', 16)
         cy.get('@productThumbnail').find('.productcart').invoke('attr', 'title').should('include', 'Add to Cart')
     });
-    it.only("Calculate total of normal and sale products", () => {
+    it("Calculate total of normal and sale products", () => {
         cy.visit("https://www.automationteststore.com/")
         cy.get(".thumbnail").as('productThumbnail')
-        // cy.get('@productThumbnail').find('.oneprice').each(($el, index, $list)=> {
-        //     cy.log($el.text())
-        // })
+
         cy.get('@productThumbnail').find('.oneprice').invoke('text').as('itemPrice')
         cy.get('@productThumbnail').find('.pricenew').invoke('text').as('saleItemPrice')
+
         var itemsTotal = 0;
         cy.get('@itemPrice').then($linkText => {
             var itemPriceTotal = 0
@@ -45,7 +44,28 @@ describe("Alias and invoke", () => {
                 saleItemPriceTotal = saleItemPriceTotal + Number(saleItemPrice[j])
             }
             itemsTotal = itemsTotal + saleItemPriceTotal;
+            cy.log("Sale price items total : " + saleItemPriceTotal)
         })
         cy.log("Net total amount : " + itemsTotal)
+    });
+    it("hello test", () => {
+        cy.log("This is test")
+        cy.visit("https://www.automationteststore.com/")
+        cy.xpath("//a[contains(@href,'product/category') and contains(text(),'Books')]").click().then(() => {
+            cy.get('.maintext').then($linkText => {
+                var txt = $linkText.text();
+                cy.log(txt)
+            });
+        });
+    });
+    it.only("Practise", () => {
+        cy.log("This is test")
+        cy.visit("https://www.automationteststore.com/")
+        cy.xpath("//a[contains(@href,'product/category') and contains(text(),'Books')]").click().then(() => {
+            cy.get('.maintext').invoke('text').as('bookText');
+            cy.get('@bookText').then($linkText => {
+                cy.log($linkText)
+            })
+        })
     });
 });
